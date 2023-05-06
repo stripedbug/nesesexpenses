@@ -1,30 +1,52 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+<div>
+
+<div class="screen" v-if="!$store.state.appinitiated">
+
+  <div class="loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+</div>
+
+
+
+<router-view />
+
+</div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
 
-nav {
-  padding: 30px;
+  name: 'App',
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+  data () {
+    return {
+      
     }
+  },
+  mounted()
+  {
+    let user =  localStorage.getItem("nesesauth");
+    if(!user)
+    {      
+      this.$router.push({ name: 'Login' })
+    }
+    else
+    {
+      this.$store.dispatch('setUser',user) 
+    }
+
   }
 }
+</script>
+
+<style lang="css" scoped>
+  *{
+    margin: 0;
+    padding: 0;
+  }
 </style>
