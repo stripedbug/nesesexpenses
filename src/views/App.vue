@@ -81,9 +81,21 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css" >
     .themaingrid{
         width: 99%;
         padding: 0 20px;
+    }
+    .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link{
+        padding: 1.15rem;
+    }
+    .p-tabmenu{
+        width: 100%;
+    }
+    .p-tabmenu-nav
+    {
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
     }
 </style>
