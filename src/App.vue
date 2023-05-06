@@ -30,8 +30,10 @@ export default {
   },
   mounted()
   {
-    
+
     let user =  localStorage.getItem("nesesauth");
+    console.log("app init user")
+    console.log(user)
     if(!user)
     {      
       this.$router.push({ name: 'Login' })

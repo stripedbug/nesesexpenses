@@ -56,9 +56,31 @@ methods:{
       console.log(gsReference) 
 
   },
-  async getAuth()
+  async getTheAuth()
   {
     return auth
+  },
+  async updateProfile(data)
+  {
+    console.log(data)
+    console.log(store.state.user.uid)
+    let data_obj  ={}
+    data_obj.email = data.email
+    if(data.password)
+    {
+      
+      data_obj.password = data.password
+    }
+    getAuth()
+      .updateUser(store.state.user.uid, data_obj)
+      .then((userRecord) => {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log('Successfully updated user', userRecord.toJSON());
+        return "done"
+      })
+      .catch((error) => {
+        console.log('Error updating user:', error);
+      });
   },
   async login(email,password)
   {
@@ -66,9 +88,15 @@ methods:{
     .then(async (userCredential) => {
       // Signed in 
       const user = userCredential.user;
+      console.log("login")
       console.log(user)
-      localStorage.setItem("nesesauth", user);
-      await store.dispatch('setUser',user) 
+      let user_obj = {
+        email:user.email,
+        accessToken:user.accessToken,
+        uid:user.uid,
+      }
+      localStorage.setItem("nesesauth", user_obj);
+      await store.dispatch('setUser',user_obj) 
       await this.$router.push({ name: 'App' })
       // ...
     })

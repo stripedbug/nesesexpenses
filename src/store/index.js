@@ -27,8 +27,6 @@ export default createStore({
       commit("SET_USER",data)
     },
     SetAppInitiated({commit},data)  {
-      console.log("SetAppInitiated")
-      console.log(data)
       commit("SET_APP_INITIATED",data)
     },
     setExpenseCollections({commit},data)  {
