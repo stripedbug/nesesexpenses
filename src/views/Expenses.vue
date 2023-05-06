@@ -29,7 +29,7 @@
 
 <div class="col-6 md:col-2 mb-3">
 <div class="flex align-items-center justify-content-center ">
-<FileUpload mode="basic" name="demo[]"  chooseLabel="Invoice" :maxFileSize="1000000" @upload="onUpload" @select="uploadFile" />
+<FileUpload mode="basic" name="demo[]"  chooseLabel="Invoice" :maxFileSize="10000000000" @upload="onUpload" @select="uploadFile" />
 </div>
 </div>
 
@@ -143,11 +143,11 @@
           <template v-if="slotProps.data.edit_invoice">
             <div class="justify-content-start flex">
               <div class="hide_on_mobile ">
-             <FileUpload mode="basic" name="demo[]"  chooseLabel="Upload" :maxFileSize="1000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
+             <FileUpload mode="basic" name="demo[]"  chooseLabel="Upload" :maxFileSize="10000000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
            </div>
 
            <div class="show_on_mobile ">
-             <FileUpload mode="basic" name="demo[]"  chooseLabel="" :maxFileSize="1000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
+             <FileUpload mode="basic" name="demo[]"  chooseLabel=" " :maxFileSize="10000000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
            </div>
 
 
