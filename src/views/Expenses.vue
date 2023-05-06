@@ -268,8 +268,23 @@ export default {
     },
     async removeInvoice(data)
     {
-      delete data.file
-      this.updateCollection(data)
+      
+      
+
+      this.$confirm.require({
+            message: 'Are you sure you want to proceed?',
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                this.submitting = await true
+                delete data.file
+                this.updateCollection(data)
+                this.submitting = await false
+            },
+            reject: () => {
+                
+            }
+        });
     },
     async showDialog(item)
     {
