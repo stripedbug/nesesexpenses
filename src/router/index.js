@@ -5,6 +5,7 @@ import Tags from '../views/Tags.vue'
 import Reports from '../views/Reports.vue'
 import ExpenditureItems from '../views/ExpenditureItems.vue'
 import ExpenseCollections from '../views/ExpenseCollections.vue'
+import Error404 from '../views/Error404.vue'
 import Expenses from '../views/Expenses.vue'
 import Login from '../views/Login.vue'
 import App from '../views/App.vue'
@@ -49,7 +50,12 @@ const routes = [
         path: '/expenses',
         name: 'Expenses',
         component: Expenses
-      }
+      },
+      {                                                                                                                                                                                   
+        path: '/:pathMatch(.*)*',                                                                                                                                                         
+        name: 'error404',                                                                                                                                                                                      
+        component: Error404                                                                                                                                                               
+      },
 
     ]
   },
