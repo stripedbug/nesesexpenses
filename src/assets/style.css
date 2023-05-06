@@ -92,6 +92,7 @@ html{
 body{
   margin: 0;
   padding: 0;
+  background: #f3f5f9;
 }
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link:not(.p-disabled):focus
 {

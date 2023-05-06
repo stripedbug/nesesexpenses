@@ -88,14 +88,31 @@ export default {
     }
     .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link{
         padding: 1.15rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background-color: #ec4899 !important;
+        color: #ffffff !important;
+    }
+    .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link{
+        border-color: #ffffff !important;
+        border-width: 0 0 4px 0;
     }
     .p-tabmenu{
         width: 100%;
     }
-    .p-tabmenu-nav
+    .p-tabmenu .p-tabmenu-nav
     {
+        background-color: #ec4899 !important;
         width: 100%;
         display: flex;
         justify-content: space-evenly;
+    }
+    .p-tabmenu .p-tabmenu-nav .p-tabmenuitem
+    {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        background-color: #ec4899 !important;
     }
 </style>
