@@ -22,6 +22,11 @@ export default {
     return {
     	value:null,
     }
+  },
+  mounted()
+  {
+    console.log("mount")
+    this.$store.dispatch('SetAppInitiated',true) 
   }
 }
 </script>

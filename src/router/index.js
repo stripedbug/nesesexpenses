@@ -21,6 +21,11 @@ const routes = [
     component: App,
     children:[
       {
+        path: '/',
+        name: 'Home',
+        component: Home
+      },
+      {
         path: '/tags',
         name: 'Tags',
         component: Tags

@@ -69,7 +69,7 @@ methods:{
       console.log(user)
       localStorage.setItem("nesesauth", user);
       await store.dispatch('setUser',user) 
-      await this.$router.push({ name: 'ExpenseCollections' })
+      await this.$router.push({ name: 'App' })
       // ...
     })
     .catch((error) => {

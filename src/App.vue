@@ -30,6 +30,7 @@ export default {
   },
   mounted()
   {
+    
     let user =  localStorage.getItem("nesesauth");
     if(!user)
     {      

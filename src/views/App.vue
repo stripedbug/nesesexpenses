@@ -22,6 +22,11 @@ export default {
     return {
     	items: [
         {
+            label: 'Home',
+            icon: 'pi pi-fw pi-home',
+            to: '/'
+        },
+        {
             label: 'Expense Collections',
             icon: 'pi pi-fw pi-sitemap',
             to: '/expensecollections'
