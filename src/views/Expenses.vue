@@ -131,15 +131,29 @@
       <template #body="slotProps">
 
         <template v-if="slotProps.data.file">
-          <Button icon="pi pi-eye" label="Show " class="  p-button-sm"   @click="showDialog(slotProps.data)" :loading="submitting"/>
-          <Button icon="pi pi-trash" label="Remove" class="  p-button-sm ml-2"   severity="danger" @click="removeInvoice(slotProps.data)" :loading="submitting"/>
+          <div class="justify-content-start flex">
+          <Button icon="pi pi-eye" label="Show " class="hide_on_mobile  p-button-sm"   @click="showDialog(slotProps.data)" :loading="submitting"/>
+          <Button icon="pi pi-trash" label="Remove" class="hide_on_mobile  p-button-sm ml-2"   severity="danger" @click="removeInvoice(slotProps.data)" :loading="submitting"/>
+
+           <Button icon="pi pi-eye"  class="show_on_mobile  p-button-sm"   @click="showDialog(slotProps.data)" :loading="submitting"/>
+          <Button icon="pi pi-trash"  class="show_on_mobile  p-button-sm ml-2"   severity="danger" @click="removeInvoice(slotProps.data)" :loading="submitting"/>
+        </div>
         </template>
         <template v-else>
           <template v-if="slotProps.data.edit_invoice">
             <div class="justify-content-start flex">
-             <FileUpload mode="basic" name="demo[]"  chooseLabel="Upload" :maxFileSize="1000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)"/>
+              <div class="hide_on_mobile ">
+             <FileUpload mode="basic" name="demo[]"  chooseLabel="Upload" :maxFileSize="1000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
+           </div>
+
+           <div class="show_on_mobile ">
+             <FileUpload mode="basic" name="demo[]"  chooseLabel="" :maxFileSize="1000000" @upload="onUploadForExisting($event,slotProps.data)"  :auto="true" customUpload @uploader="onUploadForExisting($event,slotProps.data)" />
+           </div>
+
+
              
-              <Button icon="pi pi-times"  aria-label="Cancel"  label="Cancel"  size="small" @click="cancelEditInvoice" severity="danger" class="ml-2"/>
+              <Button icon="pi pi-times"  aria-label="Cancel"  label="Cancel"  size="small" @click="cancelEditInvoice" severity="danger" class="hide_on_mobile ml-2  p-button-sm"/>
+              <Button icon="pi pi-times"  aria-label="Cancel"    size="small" @click="cancelEditInvoice" severity="danger" class="show_on_mobile ml-2  p-button-sm"/>
             </div>
           </template>
           <template v-else>
