@@ -2,8 +2,10 @@
 
 <div class="grid">
 
-<div class="col-10 md:col-11"><h2 class="text-primary font-bold mt-1">Expenses</h2></div>
+<div class="pageheader sticky col-12 top-0 z-5 p-2 text-white bg-indigo-500"><div class="grid">
+<div class="col-10 md:col-11"><h1 class=" font-bold m-0">Expenses</h1></div>
 <div class="col-2 md:col-1 pt-3"><i v-tooltip.bottom="'The items created on this page are actual expenses grouped by expendure items.'" class="pi pi-question-circle" style="font-size: 1.5rem"></i></div>
+</div></div>
 
 
 
@@ -112,10 +114,10 @@
       </template>
     </Column>
 
-    <Column field="tag"  header="Tags" >
+    <Column field="tag"  header="Tags" headerStyle="width: 15rem; text-align: center">
       <template #body="slotProps">
         <p class="editable_input" >          
-          <Tag  v-for="element in slotProps.data.tag" class="mr-2">
+          <Tag  v-for="element in slotProps.data.tag" class="mr-2 mb-2">
             <p class="mt-0 mb-0">{{getTagItem(element)}}</p>
 
           </Tag>        

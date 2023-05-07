@@ -1,8 +1,10 @@
 <template>
 <div class="grid">
 
-<div class="col-10 md:col-11"><h2 class="text-primary font-bold mt-1">Reports</h2></div>
+<div class="pageheader sticky col-12 top-0 z-5 p-2 text-white bg-indigo-500"><div class="grid">
+<div class="col-10 md:col-11"><h1 class="font-bold m-0">Reports</h1></div>
 <div class="col-2 md:col-1 pt-3"><i v-tooltip.bottom="'The items created on this page are actual expenses grouped by expendure items.'" class="pi pi-question-circle" style="font-size: 1.5rem"></i></div>
+</div></div>
 
 <template v-if="loading">
 <div class="col-12 ">
@@ -17,11 +19,14 @@
    <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold">{{item.name}}</span>
+          <div>
+          <span class="text-xl text-900 font-normal">Collection total: <b class="text-primary">{{getCollTotal(item)}}</b> </span>
+        </div>
       </div>
   </template>
     <Column field="name" header="Name" style="width: 25%"></Column>
     <Column expander style="width: 5rem" />
-    <Column v-for="column in columns" field="code" :header="column">
+    <Column v-for="column in item.columns" field="code" :header="column">
       <template #body="slotProps">
         {{showData(slotProps.data,column)}}
     </template>
@@ -108,6 +113,21 @@ export default {
     await this.createReports()
   },
   methods:{
+    getCollTotal(collection)
+    {
+      
+      let the_total_item = collection.expenseitems.find((item)=>{return item.name=="total"})
+      if(the_total_item)
+      {
+        let the_total = 0
+        for(let element of the_total_item.total)
+        {
+          the_total += element.total
+        }
+        return the_total
+      }
+      return 0
+    },
     async showDialog(item)
     {
       //this.invoive_popup_visibility = true
@@ -139,14 +159,32 @@ export default {
     },
     showData(item,column)
     {
-      let relevant_arr = item.expenses[column]
-      if(relevant_arr && relevant_arr.length)
+      
+      if(item.type=="montly_data")
       {
-        let expenses = relevant_arr.filter((item)=>{return item.the_month == column})
-        let amount = 0
-        expenses.forEach((item)=>{amount+=item.price})
-        return this.$filters.numberformat(amount)
+        let relevant_arr = item.expenses[column]
+        if(relevant_arr && relevant_arr.length)
+        {
+          let expenses = relevant_arr.filter((item)=>{return item.the_month == column})
+          let amount = 0
+          expenses.forEach((item)=>{amount+=item.price})
+          return this.$filters.numberformat(amount)
+        }
       }
+      if(item.type=="tally_data")
+      {
+        
+        let totals = item.total.filter((element)=>{return element.id == column})
+        let the_total = 0
+        for(let total of totals)
+        {
+          the_total += total.total
+        }
+
+        return the_total
+
+      }
+      
       return 0
      
     },
@@ -172,18 +210,7 @@ export default {
         this.loading = false
         return false
       }
-      let start = this.expenses[0].date.toDate()
-      let end = this.expenses[this.expenses.length-1].date.toDate()
-
-      let diff = this.monthDiff(start,end)
-      console.log(diff)
-      let counter = 0
-      while(diff+1>counter)
-      {
-        let month_name = moment(start).startOf('month').add(counter, 'M').format('MM-YYYY')
-        this.columns.push(month_name)
-        counter++
-      }
+      
 
       
       for(let item of this.expenses)
@@ -195,6 +222,7 @@ export default {
       let expenses = this.sanitizeArray(this.expenses)
       expenses = this.groupByMonths(expenses,"the_month")
       console.log(expenses)
+      
 
       //loop collections
       for(let collection of this.collections)
@@ -206,6 +234,7 @@ export default {
           total:0,
           start_date:null,
           end_date:null,
+          columns:[],
         }
 
 
@@ -222,6 +251,7 @@ export default {
             total:0,
             start_date:null,
             end_date:null,
+            type:"montly_data",
           } 
 
 
@@ -230,11 +260,94 @@ export default {
           let item_expenses_by_month = this.groupByMonths(item_expenses,"the_month")
           col_expense_item_obj.expenses = item_expenses_by_month
           collection_obj.expenseitems.push(col_expense_item_obj)
-          //loop expenses
+
+          //calculate columns    
+          let diff =0  
+          let start
+          let end
+
           
-          //loop expenses
+          if(item_expenses.length)
+          {      
+            start = item_expenses[0].date.toDate()
+            end = item_expenses[item_expenses.length-1].date.toDate()    
+            diff = this.monthDiff(start,end) 
+
+            if(diff===0)
+            {
+              console.log("only one")
+              let month_name = moment(start).startOf('month').format('MM-YYYY')
+              console.log(month_name)
+              let month_ind = collection_obj.columns.findIndex((item)=>{return item == month_name})
+              if(month_ind==-1)
+              {
+                collection_obj.columns.push(month_name)
+              }
+              
+            }
+            else
+            {
+              console.log("not only one")
+              let counter = 0
+              while(diff+1>counter)
+              {
+                let month_name = moment(start).startOf('month').add(counter, 'M').format('MM-YYYY')
+                let month_ind = collection_obj.columns.findIndex((item)=>{return item == month_name})
+                if(month_ind==-1)
+                {
+                  collection_obj.columns.push(month_name)
+                }
+                counter++
+              }              
+            }
+          }
+          
+          //calculate columns
         }
         //loop expenses_items
+
+        let col_tally_expense_item_obj = {
+            name:"total",
+            id:collection.id,
+            expenses:[],
+            all_expenses:[],
+            months:[],
+            total:[],
+            start_date:null,
+            end_date:null,
+            type:"tally_data",
+          } 
+
+          for(let the_col of  collection_obj.columns)
+          {
+
+            for(let the_exp_item of collection_obj.expenseitems)
+            {
+              
+              
+              let tally_obj = {
+                  id:the_col,
+                  total:0,
+                }
+              if(the_exp_item.expenses[the_col])
+              {
+                
+                for(let the_exp of the_exp_item.expenses[the_col])
+                {
+                  
+                  tally_obj.total += the_exp.price
+                }
+
+              }
+              col_tally_expense_item_obj.total.push(tally_obj)
+            }
+          }
+
+          collection_obj.expenseitems.push(col_tally_expense_item_obj)
+
+
+
+
         this.datatableitems.push(collection_obj)
       }
       //loop collections

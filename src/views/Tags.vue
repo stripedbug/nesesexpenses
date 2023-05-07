@@ -1,8 +1,11 @@
 <template>
 
 <div class="grid">
-<div class="col-10 md:col-11"><h2 class="text-primary font-bold mt-1">Tags</h2></div>
+
+<div class="pageheader sticky col-12 top-0 z-5 p-2 text-white bg-indigo-500"><div class="grid">
+<div class="col-10 md:col-11"><h1 class="font-bold m-0">Tags</h1></div>
 <div class="col-2 md:col-1 pt-3"><i v-tooltip.bottom="'Tags are designed for grouping and easy filtering for expenses. Each expense may have one ore many tags.'" class="pi pi-question-circle" style="font-size: 1.5rem"></i></div>
+</div></div>
 
 <div class="col-10 md:col-11 mb-3">
 <InputText type="text" v-model="name" class="w-full p-inputtext-sm" placeholder="Add New Tag"  @keyup.enter="addNew"/>
@@ -127,7 +130,7 @@ export default {
     async getCollections()
     {
      this.collections = await this.getFirebaseItems("tags")
-     
+
     },
     deleteCollection(id)
     {

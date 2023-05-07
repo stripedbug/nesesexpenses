@@ -203,7 +203,7 @@ methods:{
   showNotification(severity,message,detail=null)
   {
     console.log("showNotification")
-    this.$toast.add({ severity: severity, summary: message, detail:detail, life: 3000 });
+    this.$toast.add({ severity: severity, summary: message, detail:detail, life: 30000 });
   },
   sanitizeArray(arr)
   {

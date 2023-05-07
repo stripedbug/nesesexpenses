@@ -5,8 +5,10 @@
 <div class="themaingrid mt-4">
 <router-view/>
 </div>
-<TabMenu :model="items" @tab-change="tabchange" class="show_on_mobile fixed bottom-0"/>
-<Toast />
+<div class="show_on_mobile fixed bottom-0">
+<TabMenu :model="items" @tab-change="tabchange" />
+</div>
+<Toast   position="bottom-right" class="speaicl_toast"/>
 <ConfirmDialog></ConfirmDialog>
 
 </div>
@@ -85,6 +87,7 @@ export default {
     .themaingrid{
         width: 99%;
         padding: 0 20px;
+        padding-bottom: 100px;
     }
     .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link{
         padding: 1.15rem;
@@ -114,5 +117,9 @@ export default {
         display: flex;
         justify-content: center;
         background-color: #ec4899 !important;
+    }
+    .p-toast-bottom-right
+    {
+      bottom: 50px !important;
     }
 </style>
