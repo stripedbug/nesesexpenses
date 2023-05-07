@@ -290,6 +290,21 @@ export default {
             }
         });
     },
+    downloadImage(url) {
+      fetch(url, {
+        mode : 'no-cors',
+      })
+        .then(response => response.blob())
+        .then(blob => {
+        let blobUrl = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.download = url.replace(/^.*[\\\/]/, '');
+        a.href = blobUrl;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+    },
     async showDialog(item)
     {
       //this.invoive_popup_visibility = true
@@ -297,7 +312,9 @@ export default {
       let ddd = await this.getDownloadUrl(item.id)
       console.log(ddd);
 
-      let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file+'?alt=media'
+      let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file
+
+      
       console.log(url);
       const a = document.createElement('a')
       a.href = url
