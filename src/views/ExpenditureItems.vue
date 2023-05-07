@@ -42,6 +42,8 @@
   editMode="cell"
   @cell-edit-complete="onCellEditComplete" 
   tableClass="editable-cells-table"
+  paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+  sortMode="multiple"
   >
   <Column rowReorder headerStyle="width: 3rem" :reorderableColumn="true" />
     <Column field="name" header="Name" headerStyle="width: 43%" >
