@@ -107,7 +107,7 @@ export default {
     return {
     	adding_new:false,
     	name:null,
-      color:null,
+      color:"3B82F6",
     	loading:true,
     	submitting:false,
     	collections:[],
@@ -181,7 +181,7 @@ export default {
   			this.submitting = await false
   			await this.getCollections()
         this.name = null
-        this.color = null
+        this.color = "3B82F6"
         this.showNotification("success","Item added","")
   		}
   	},

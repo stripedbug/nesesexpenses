@@ -32,7 +32,7 @@
   </template>
 
   <template #empty>
-      No expenses was recorder for this collection yet.
+      No expense was recorder for this collection yet.
   </template>
     <Column field="name" header="Name" :style="'width: 25%;background:'+item.lesscolor"></Column>
     <Column expander style="width: 5rem" />
