@@ -34,7 +34,10 @@
     <template #expansion="slotProps">
       <div class="p-3 inner_table">
           <h3 class="text-gray-100 font-normal">All Expenses for <b>{{ slotProps.data.name }}</b></h3>
-          <DataTable :value="slotProps.data.all_expenses" >
+          <DataTable :value="slotProps.data.all_expenses" 
+          paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+          sortMode="multiple"
+          >
               <Column field="name" header="Name" sortable></Column>
               <Column field="price" header="Amount" sortable></Column>
               <Column field="date" header="Date" sortable>
@@ -42,7 +45,7 @@
                   {{ $filters.momentFormatSoft( slotProps.data.date.toDate(),"DD-MM-YYYY")}}
                 </template>
               </Column>
-              <Column field="tag"  header="Tags" >
+              <Column field="tag"  header="Tags" sortable>
                 <template #body="slotProps">
                   <p>          
                     <Tag  v-for="element in slotProps.data.tag" class="mr-2">
@@ -53,7 +56,7 @@
                 </template>
               </Column>
 
-              <Column field="file" header="Invoice" >
+              <Column field="file" header="Invoice" sortable>
                 <template #body="slotProps">
                   <template v-if="slotProps.data.file">
                     <Button icon="pi pi-eye" label="Show " class="  p-button-sm"   @click="showDialog(slotProps.data)" />

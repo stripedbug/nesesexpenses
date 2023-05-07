@@ -64,9 +64,11 @@
   editMode="cell"
   @cell-edit-complete="onCellEditComplete" 
   tableClass="editable-cells-table"
+  paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+  sortMode="multiple"
   >
 
-    <Column field="name" header="Name" >
+    <Column field="name" header="Name" sortable headerStyle="width: 25rem">
       <template #body="slotProps">
         <p class="editable_input" >
         {{slotProps.data.name}}
@@ -77,7 +79,7 @@
       </template>
     </Column>
 
-    <Column field="price" header="Amount" >
+    <Column field="price" header="Amount" sortable>
       <template #body="slotProps">
         <p class="editable_input" >
         {{ $filters.numberformat( slotProps.data.price," DD-MM-YYYY")}}
@@ -88,7 +90,7 @@
       </template>
     </Column>
 
-    <Column field="expenseitem"  header="Expenditure Item" >
+    <Column field="expenseitem"  header="Expenditure Item" sortable>
       <template #body="slotProps">
         <p class="editable_input" >
         {{showCollection(slotProps.data.expenseitem)}}
@@ -101,7 +103,7 @@
 
     </Column>
 
-    <Column field="date"  header="Date" >
+    <Column field="date"  header="Date" sortable>
       <template #body="slotProps">
         <p class="editable_input">
         {{ $filters.momentFormatSoft( slotProps.data.date,"DD-MM-YYYY")}}
@@ -114,7 +116,7 @@
       </template>
     </Column>
 
-    <Column field="tag"  header="Tags" headerStyle="width: 15rem; text-align: center">
+    <Column field="tag"  header="Tags" headerStyle="width: 15rem; text-align: center" sortable>
       <template #body="slotProps">
         <p class="editable_input" >          
           <Tag  v-for="element in slotProps.data.tag" class="mr-2 mb-2">
@@ -129,7 +131,7 @@
       </template>
     </Column>
 
-    <Column field="file" header="Invoice" >
+    <Column field="file" header="Invoice" sortable>
       <template #body="slotProps">
 
         <template v-if="slotProps.data.file">
