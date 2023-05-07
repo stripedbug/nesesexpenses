@@ -37,6 +37,7 @@ import MultiSelect from 'primevue/multiselect';
 import FileUpload from 'primevue/fileupload';
 import Tag from 'primevue/tag';
 import InputNumber from 'primevue/inputnumber';
+import ColorPicker from 'primevue/colorpicker';
 
 import moment from "moment"
 
@@ -73,6 +74,7 @@ app.component('MultiSelect', MultiSelect);
 app.component('FileUpload', FileUpload);
 app.component('Tag', Tag);
 app.component('InputNumber', InputNumber);
+app.component('ColorPicker', ColorPicker);
 
 app.config.globalProperties.$filters = {
 	momentFormat: function (value,format) {

@@ -8,8 +8,14 @@
 </div></div>
 
 
-<div class="col-10 md:col-11 mb-3">
+<div class="col-9 md:col-10 mb-3">
 <InputText type="text" v-model="name" class="w-full p-inputtext-sm" placeholder="Add New Collection"  @keyup.enter="addNew"/>
+</div>
+
+<div class="col-1 md:col-1 mb-3">
+
+<ColorPicker v-model="color" format="hex"/>
+
 </div>
 <div class="col-2 md:col-1 mb-3">
 <Button icon="pi pi-check" aria-label="Submit"  size="small" @click="addNew" :loading="submitting"/>
@@ -49,6 +55,22 @@
       </template>
 
     </Column>
+
+    <Column field="color" header="Color">
+      <template #body="slotProps">
+        <p class="editable_input">
+        <div class="color_area" :style="'background-color:#'+slotProps.data.color"></div>
+        </p>
+        
+      </template>
+
+      <template #editor="{ data, field }">
+        <ColorPicker v-model="data[field]" format="hex"/>
+      </template>
+
+    </Column>
+
+
     <Column  headerStyle="width: 7rem; text-align: center" >
       <template #body="slotProps">
         <Button icon="pi pi-trash" class="mt-1" aria-label="Submit"  size="small" severity="danger" @click="deleteCollection(slotProps.data.id)" :loading="submitting"/>
@@ -85,6 +107,7 @@ export default {
     return {
     	adding_new:false,
     	name:null,
+      color:null,
     	loading:true,
     	submitting:false,
     	collections:[],
@@ -129,6 +152,7 @@ export default {
   	async getCollections()
   	{
   	 this.collections = await this.getFirebaseItems("expensecollections")
+     console.log(this.collections)
   	},
   	deleteCollection(id)
   	{
@@ -153,10 +177,11 @@ export default {
   		if(this.name || this.name !=="")
   		{
   			this.submitting = await true
-  			await this.addItem("expensecollections",{name:this.name}) 			
+  			await this.addItem("expensecollections",{name:this.name,color:this.color}) 			
   			this.submitting = await false
   			await this.getCollections()
-  			this.name = null
+        this.name = null
+        this.color = null
         this.showNotification("success","Item added","")
   		}
   	},
@@ -165,4 +190,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+  .color_area{
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+  }
 </style>

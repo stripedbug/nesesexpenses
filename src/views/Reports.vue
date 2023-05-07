@@ -15,16 +15,20 @@
 <template v-else>
 
 <div class="col-12 mb-6" v-for="item in datatableitems" >
-<DataTable  tableStyle="min-width: 50rem" :value="item.expenseitems" v-model:expandedRows="expandedRows" @rowExpand="onRowExpand" @rowCollapse="onRowCollapse">
-   <template #header>
-      <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-          <span class="text-xl text-900 font-bold">{{item.name}}</span>
+<DataTable  tableStyle="min-width: 50rem" tableClass="report_table" :value="item.expenseitems" v-model:expandedRows="expandedRows" @rowExpand="onRowExpand" @rowCollapse="onRowCollapse">
+   <template #header >
+      <div class="flex flex-wrap align-items-center justify-content-between gap-2 p-3" :style="'background:'+item.color">
+          <span class="text-xl text-white font-bold">{{item.name}}</span>
           <div>
-          <span class="text-xl text-900 font-normal">Collection total: <b class="text-primary">{{getCollTotal(item)}}</b> </span>
+          <span class="text-xl text-900 font-normal text-white">Collection total: <b class="text-white">{{getCollTotal(item)}}</b> </span>
         </div>
       </div>
   </template>
-    <Column field="name" header="Name" style="width: 25%"></Column>
+
+  <template #empty>
+      No expenses was recorder for this collection yet.
+  </template>
+    <Column field="name" header="Name" :style="'width: 25%;background:'+item.lesscolor"></Column>
     <Column expander style="width: 5rem" />
     <Column v-for="column in item.columns" field="code" :header="column">
       <template #body="slotProps">
@@ -32,7 +36,7 @@
     </template>
     </Column>
     <template #expansion="slotProps">
-      <div class="p-3 inner_table">
+      <div class="p-3 inner_table" :style="'background:'+item.color">
           <h3 class="text-gray-100 font-normal">All Expenses for <b>{{ slotProps.data.name }}</b></h3>
           <DataTable :value="slotProps.data.all_expenses" 
           paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
@@ -116,6 +120,18 @@ export default {
     await this.createReports()
   },
   methods:{
+    hexToRgbA(hex){
+        var c;
+        if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+            c= hex.substring(1).split('');
+            if(c.length== 3){
+                c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+            c= '0x'+c.join('');
+            return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',1)';
+        }
+        throw new Error('Bad Hex');
+    },
     getCollTotal(collection)
     {
       
@@ -230,6 +246,13 @@ export default {
       //loop collections
       for(let collection of this.collections)
       {
+        let color
+        let lesscolor
+        if(collection.color)
+        {
+          color =this.hexToRgbA("#"+collection.color)
+          lesscolor = color.replace(",1)", ",0.3)");
+        }
         let collection_obj = {
           name:collection.name,
           id:collection.id,
@@ -238,6 +261,8 @@ export default {
           start_date:null,
           end_date:null,
           columns:[],
+          color:color,
+          lesscolor:lesscolor
         }
 
 
@@ -309,7 +334,10 @@ export default {
         }
         //loop expenses_items
 
-        let col_tally_expense_item_obj = {
+        //create total row
+        if(collection_obj.expenseitems.length)
+        {
+          let col_tally_expense_item_obj = {
             name:"total",
             id:collection.id,
             expenses:[],
@@ -348,6 +376,10 @@ export default {
 
           collection_obj.expenseitems.push(col_tally_expense_item_obj)
 
+        }
+        //create total row
+        
+
 
 
 
@@ -362,8 +394,11 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css" >
   .inner_table{
-    background: #ec4899;
+  }
+  .p-datatable-header
+  {
+    padding: 0 !important;
   }
 </style>
