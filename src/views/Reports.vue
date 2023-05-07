@@ -19,8 +19,14 @@
    <template #header >
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 p-3" :style="'background:'+item.color">
           <span class="text-xl text-white font-bold">{{item.name}}</span>
-          <div>
-          <span class="text-xl text-900 font-normal text-white">Collection total: <b class="text-white">{{getCollTotal(item)}}</b> </span>
+          <div class="flex flex-wrap align-items-center justify-content-between">
+          <span class="text-xl text-900 font-normal text-white mt-0">Collection total: <b class="text-white">{{getCollTotal(item)}}</b> </span>
+          <div class="hide_on_mobile">
+          <Button label="Download" icon="pi pi-download" class="p-button-sm ml-4 bg-white text-primary"  @click="downloadReport(item)"   />
+          </div>
+          <div class="show_on_mobile">
+          <Button  icon="pi pi-download" class="p-button-sm ml-4 bg-white text-primary"  @click="downloadReport(item)"   />
+          </div>
         </div>
       </div>
   </template>
@@ -90,6 +96,7 @@
 </template>
 
 <script>
+import * as XLSX from 'xlsx/xlsx.mjs';
 import moment from "moment"
 export default {
 
@@ -120,6 +127,66 @@ export default {
     await this.createReports()
   },
   methods:{
+    async downloadReport(collection)
+    {
+      console.log(collection)
+      let sheet = []
+      let row =  [
+      collection.name      
+      ]
+      for(let column of collection.columns)
+      {
+        row.push(column)
+      }
+      await sheet.push(row)
+      for(let expenseitem of collection.expenseitems)
+      {
+        let expense_row = [
+        expenseitem.name      
+        ]
+        for(let column of collection.columns)
+        {
+          let number = this.showData(expenseitem,column)
+          expense_row.push(parseFloat(number))
+        }
+        await sheet.push(expense_row)
+      }
+
+
+      let ws = await XLSX.utils.json_to_sheet(sheet)
+      let wb = await XLSX.utils.book_new();
+      await XLSX.utils.book_append_sheet(wb,ws,collection.name)
+
+      for(let expenseitem of collection.expenseitems)
+      {
+        if(expenseitem.name !=="total")
+        {
+          let expense_sheet = []
+          let expense_head_row = [
+          "Expense Description",
+          "Amount",
+          "Date"
+          ]
+          await expense_sheet.push(expense_head_row)
+          for(let all_expense of expenseitem.all_expenses)
+          {
+            let all_expense_row = [
+              all_expense.name,
+              all_expense.price,            
+              this.$filters.momentFormatSoft( all_expense.date.toDate(),"DD-MM-YYYY")
+            ]
+            await expense_sheet.push(all_expense_row)
+          }
+          let wss = await XLSX.utils.json_to_sheet(expense_sheet)
+          await XLSX.utils.book_append_sheet(wb,wss,expenseitem.name)
+        }
+        
+      }
+
+
+
+      await XLSX.writeFile(wb,collection.name +".xls")
+    },
     hexToRgbA(hex){
         var c;
         if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
