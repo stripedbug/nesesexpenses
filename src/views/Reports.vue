@@ -38,7 +38,16 @@
     <Column expander style="width: 5rem" />
     <Column v-for="column in item.columns" field="code" :header="column">
       <template #body="slotProps">
-        {{showData(slotProps.data,column)}}
+        <div class="flex flex-wrap align-items-center justify-content-start " >
+        <p>{{showData(slotProps.data,column)}}</p> 
+        <Button 
+        icon="pi pi-list" 
+        text 
+        @click="showCellDetail(slotProps.data,column)" 
+        class="p-button-sm ml-2" 
+        v-if="showData(slotProps.data,column) && slotProps.data.type=='montly_data'"
+        />
+      </div>
     </template>
     </Column>
     <template #expansion="slotProps">
@@ -87,6 +96,48 @@
 
 </DataTable>
 
+<Dialog v-model:visible="show_cell_detail_dialog" modal :header="dialog_header_text" :style="{ width: '90vw' }">
+<DataTable :value="selected_cell_data" 
+paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+sortMode="multiple"
+>
+    <Column field="name" header="Name" sortable></Column>
+    <Column field="price" header="Amount" sortable></Column>
+    <Column field="date" header="Date" sortable>
+      <template #body="slotProps">
+        {{ $filters.momentFormatSoft( slotProps.data.date.toDate(),"DD-MM-YYYY")}}
+      </template>
+    </Column>
+    <Column field="tag"  header="Tags" sortable>
+      <template #body="slotProps">
+        <p>          
+          <Tag  v-for="element in slotProps.data.tag" class="mr-2">
+            <p class="mt-0 mb-0">{{getTagItem(element)}}</p>
+
+          </Tag>        
+        </p>        
+      </template>
+    </Column>
+
+    <Column field="file" header="Invoice" sortable>
+      <template #body="slotProps">
+        <template v-if="slotProps.data.file">
+          <Button icon="pi pi-eye" label="Show " class="  p-button-sm"   @click="showDialog(slotProps.data)" />
+        </template>
+        <template v-else>
+            <p class="text-red-500 " >No Invoice</p> 
+        </template>
+      </template>
+    </Column>
+</DataTable>
+
+
+<template #footer>
+  <br/><br/>
+  <Button label="Close" icon="pi pi-check" @click="show_cell_detail_dialog = false" severity="danger" />
+</template>
+</Dialog>
+
 </div>
 
 </template>
@@ -113,6 +164,9 @@ export default {
       loading:true,
       expandedRows: [],
       tags:[],
+      selected_cell_data:null,
+      show_cell_detail_dialog:false,
+      dialog_header_text:null,
 
     }
   },
@@ -127,6 +181,28 @@ export default {
     await this.createReports()
   },
   methods:{
+    showCellDetail(item,column)
+    {
+      console.log(item)
+      if(item.type=="montly_data")
+      {
+        let relevant_arr = item.expenses[column]
+        if(relevant_arr && relevant_arr.length)
+        {
+          let expenses = relevant_arr.filter((item)=>{return item.the_month == column})
+          this.selected_cell_data = expenses
+          this.dialog_header_text = item.name+" - "+column
+          this.show_cell_detail_dialog = true
+        }
+      }
+      if(item.type=="tally_data")
+      {      
+        
+
+      }
+      
+      
+    },
     async downloadReport(collection)
     {
       console.log(collection)
@@ -208,9 +284,10 @@ export default {
         let the_total = 0
         for(let element of the_total_item.total)
         {
-          the_total += element.total
+          console.log(element.total)
+          the_total += parseFloat(element.total)
         }
-        return the_total
+        return this.$filters.numberformat(the_total)
       }
       return 0
     },
