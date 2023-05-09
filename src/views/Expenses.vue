@@ -46,7 +46,6 @@
 
 
 
-
 <template v-if="loading">
 <div class="col-12 ">
 <FrameOverlay></FrameOverlay>

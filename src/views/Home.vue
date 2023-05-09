@@ -7,6 +7,8 @@
 </div></div>
 
 <div class="col-12 mt-3">
+<Card>
+ <template #content>
 <h2 class="font-normal">Very easy to use!</h2>
 <br/>
 
@@ -19,8 +21,8 @@
 <h2 class="font-normal">- Optionally you can create custom tags for expenses on tags "<i class="pi pi-fw pi-tags text-xl"></i>"  tab to mark each expense.</h2>
 
 <h2 class="font-normal">4. Then visit reports <i class="pi pi-fw pi-chart-bar"></i>  tab to view and download expense reports..</h2>
-
-
+</template>
+</Card>
 </div>
 
 
