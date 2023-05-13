@@ -304,16 +304,16 @@ export default {
         a.remove();
       })
     },
+    
     async showDialog(item)
     {
       //this.invoive_popup_visibility = true
       //this.selected_expense = item
-      let ddd = await this.getDownloadUrl(item.id)
-      console.log(ddd);
+      this.downloadFile(item)
 
-      let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file
+      //let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file
 
-      
+      return false
       console.log(url);
       const a = document.createElement('a')
       a.href = url

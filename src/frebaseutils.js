@@ -5,7 +5,7 @@ import { getAnalytics } from "firebase/analytics";
 import {getFirestore, onSnapshot, collection, doc, deleteDoc, setDoc, addDoc, orderBy, query, getDoc, getDocs} from "firebase/firestore"
 import {getAuth,signInWithEmailAndPassword} from "firebase/auth"
 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -32,6 +32,30 @@ const storage = getStorage();
 
 export const frebaseutils = {
 methods:{
+  async downloadFile(item) {
+      //const pathReference = ref(storage, 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file);
+
+      getDownloadURL(ref(storage, 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file))
+      .then((url) => {
+        // `url` is the download URL for 'images/stars.jpg'
+
+        // This can be downloaded directly:
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+        };
+        xhr.open('GET', url);
+        xhr.send();
+
+        // Or inserted into an <img> element
+        //const img = document.getElementById('myimg');
+        //img.setAttribute('src', url);
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
+  },
   getFileExtension(filename)
   {
     var ext = /^.+\.([^.]+)$/.exec(filename);

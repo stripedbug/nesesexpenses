@@ -42,7 +42,6 @@
   tableClass="editable-cells-table"
   paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
   sortMode="multiple"
-
   >
     <Column field="name" header="Name">
       <template #body="slotProps">

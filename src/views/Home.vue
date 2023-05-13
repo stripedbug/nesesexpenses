@@ -14,7 +14,7 @@
 
 <h2 class="font-normal">1. First create collections like "Office" or "HR" on expense collections "<i class="pi pi-fw pi-sitemap text-xl"></i>" tab.</h2>
 
-<h2 class="font-normal">2. Then add expenditure items to the collectionslike "Building Management" or "Electricity" on expenditure items "<i class="pi pi-fw pi-sort-alpha-down text-xl"></i>"  tab.</h2>
+<h2 class="font-normal">2. Then add expenditure items to the collections like "Building Management" or "Electricity" on expenditure items "<i class="pi pi-fw pi-sort-alpha-down text-xl"></i>"  tab.</h2>
 
 <h2 class="font-normal">3. Then start adding expenses on expenses "<i class="pi pi-fw pi-money-bill text-xl"></i>"  tab. You can upload invoices too.</h2>
 
