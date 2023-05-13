@@ -309,7 +309,7 @@ export default {
     {
       //this.invoive_popup_visibility = true
       //this.selected_expense = item
-      this.downloadFile(item)
+      await this.downloadFile(item)
 
       //let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file
 

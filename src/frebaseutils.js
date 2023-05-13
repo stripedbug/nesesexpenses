@@ -40,10 +40,20 @@ methods:{
         // `url` is the download URL for 'images/stars.jpg'
 
         // This can be downloaded directly:
+        console.log(url)
         const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
           const blob = xhr.response;
+          console.log("blob")
+          console.log(blob)
+          var url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a')
+          a.href = url
+          a.download = url.split('/').pop()
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
         };
         xhr.open('GET', url);
         xhr.send();
