@@ -46,6 +46,10 @@ import moment from "moment"
 import VueClickAway from "vue3-click-away";
 //createApp(App).use(store).use(router).mount('#app')
 
+import { plugin as VueTippy } from 'vue-tippy'
+import 'tippy.js/dist/tippy.css' // optional for styling
+import 'tippy.js/animations/scale.css'
+
 const app = createApp(App);
 
 app.use(PrimeVue);
@@ -55,6 +59,24 @@ app.use(ConfirmationService);
 app.use(ToastService);
 app.use(VueClickAway)
 app.mixin(frebaseutils);
+
+app.use(
+  VueTippy,
+  // optional
+  {
+    directive: 'tippy', // => v-tippy
+    component: 'tippy', // => <tippy/>
+    componentSingleton: 'tippy-singleton', // => <tippy-singleton/>,
+    defaultProps: {
+      allowHTML: true,
+      placement: 'bottom',
+      animation: 'scale',
+    }, // => Global default options * see all props
+  }
+)
+
+
+
 app.directive('tooltip', Tooltip);
 
 app.component('InputText', InputText);

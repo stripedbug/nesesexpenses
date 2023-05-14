@@ -4,7 +4,7 @@
 
 <div class="pageheader sticky col-12 top-0 z-5 p-2 text-white bg-indigo-500"><div class="grid">
 <div class="col-10 md:col-11"><h1 class="font-bold m-0">Expense Collections</h1></div>
-<div class="col-2 md:col-1 pt-3"><i v-tooltip.bottom="'The items you add on this page are going to be used to create report pages. Every collection may have several expenditure items listed under the created collection.'" class="pi pi-question-circle" style="font-size: 1.5rem"></i></div>
+<div class="col-2 md:col-1 pt-3"><i v-tippy="{ content: 'The items you add on this page are going to be used to create report pages. Every collection may have several expenditure items listed under the created collection.' }" class="pi pi-question-circle" style="font-size: 1.5rem"></i></div>
 </div></div>
 
 
