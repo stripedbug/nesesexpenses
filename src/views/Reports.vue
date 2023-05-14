@@ -299,6 +299,7 @@ export default {
           }
           
       }
+      
       this.lineChartData = lineDataObj
       
 
