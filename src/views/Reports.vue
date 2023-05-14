@@ -299,7 +299,7 @@ export default {
           }
           
       }
-      
+
       this.lineChartData = lineDataObj
       
 
@@ -472,7 +472,10 @@ export default {
         {
           let expenses = relevant_arr.filter((item)=>{return item.the_month == column})
           let amount = 0
-          expenses.forEach((item)=>{amount+=item.price})
+          expenses.forEach((item)=>{
+            let prc = parseFloat(item.price)
+            amount += prc
+          })
           return this.$filters.numberformat(amount)
         }
       }
@@ -483,10 +486,12 @@ export default {
         let the_total = 0
         for(let total of totals)
         {
-          the_total += total.total
+          console.log("total")
+          console.log(total.total)
+          the_total += parseFloat(total.total)
         }
 
-        return the_total
+        return this.$filters.numberformat(the_total)
 
       }
       
