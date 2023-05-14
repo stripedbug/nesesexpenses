@@ -100,12 +100,18 @@
 
 <Dialog v-model:visible="show_collection_chart_dialog" modal header="Report Charts" :style="{ width: '90vw' }">
 <div class="grid">
+<div class="col-12">
+<Dropdown v-model="selected_graph_source" :options="graph_sources" optionLabel="name" optionValue="id" placeholder="Select Source" class=" p-inputtext-sm" @change="alterGraph"/>
+<hr>
+</div>
 <div class="col-12 md:col-6">
   <Chart type="pie" :data="pieChartData" :options="pieChartOptions" class="w-full md:w-30rem" />
 </div>
 <div class="col-12 md:col-6">
   <Chart type="line" :data="lineChartData" :options="lineChartOptions" class="h-30rem" />
 </div>
+
+
 
 </div>
 <template #footer>
@@ -184,6 +190,8 @@ export default {
       expenses:[],
       months:[],
       columns:[],
+      selected_graph_source:null,
+      graph_sources:[],
       datatableitems:[],
       loading:true,
       expandedRows: [],
@@ -246,10 +254,80 @@ export default {
     await this.createReports()
   },
   methods:{
-    async showReports()
+    alterGraph()
     {
-      
-      //set pie chart
+      if(this.selected_graph_source=="collections")
+      {
+        this.getAllCollectionsGraphData()
+      }
+      else
+      {
+        this.getSelectedCollectionGraphs()
+      }
+    },
+    async getSelectedCollectionGraphs()
+    {
+      let collections = this.sanitizeArray(this.datatableitems)
+      let collection = collections.find((item)=>{return item.id == this.selected_graph_source})
+      console.log(collection)
+      //pie chart
+      let collectionsObj = await {
+        labels: [],
+        datasets: [
+          {
+            data:[],
+            backgroundColor:[],
+          }
+        ]
+      }
+      for(let expenseitem of collection.expenseitems)
+      {
+          collectionsObj.labels.push(expenseitem.name)
+          let expenseitem_total = 0
+          for(let column of collection.columns)
+          {
+            expenseitem_total += await parseFloat(this.showData(expenseitem,column))
+          }
+          
+          let color = await this.generateHex()
+          await collectionsObj.datasets[0].data.push(expenseitem_total)
+          await collectionsObj.datasets[0].backgroundColor.push(color)
+      }
+      this.pieChartData = await collectionsObj
+      //pie chart
+      //line chart
+      let lineDataObj = {
+        labels:[],
+        datasets:[],
+      }
+        for(let expenseitem of collection.expenseitems)
+        {
+          if(expenseitem.name !=="total")
+          {
+            lineDataObj.labels = collection.columns
+            let dataset = {
+              label:expenseitem.name,
+              data:[],
+              fill:false,
+              borderColor:this.generateHex(),
+              tension: 0.4,
+            }
+            for(let expense of expenseitem.all_expenses)
+            {
+              dataset.data.push(expense.price)
+            }
+            lineDataObj.datasets.push(dataset)
+          }
+          }
+
+      this.lineChartData = lineDataObj
+
+      //line chart
+
+    },
+    async getAllCollectionsGraphData()
+    {
+      this.selected_graph_source = "collections"
       let collectionsObj = await {
         labels: [],
         datasets: [
@@ -260,6 +338,7 @@ export default {
         ]
       }
       collectionsObj.labels = await this.getCollectionLabels()
+      
       for(let collection of this.datatableitems)
       {
         let total = await parseFloat(this.getCollTotal(collection))
@@ -301,15 +380,24 @@ export default {
       }
 
       this.lineChartData = lineDataObj
+
+    },
+    async showReports()
+    {
+
+      let graph_sources = [
+        {
+          id:"collections",
+          name:"All Collections"
+        }
+      ]
+      for(let coll of this.datatableitems)
+      {
+        await graph_sources.push({id:coll.id,name:coll.name})
+      }
+      this.graph_sources = await graph_sources
       
-
-      //set line options
-
-
-
-
-
-      console.log(this.pieChartData)
+      await this.getAllCollectionsGraphData()
       setTimeout(()=>{
         this.show_collection_chart_dialog = true
       })
