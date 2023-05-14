@@ -39,6 +39,7 @@ import Tag from 'primevue/tag';
 import InputNumber from 'primevue/inputnumber';
 import ColorPicker from 'primevue/colorpicker';
 import Card from 'primevue/card';
+import Chart from 'primevue/chart';
 
 import moment from "moment"
 
@@ -77,6 +78,7 @@ app.component('Tag', Tag);
 app.component('InputNumber', InputNumber);
 app.component('ColorPicker', ColorPicker);
 app.component('Card', Card);
+app.component('Chart', Chart);
 
 app.config.globalProperties.$filters = {
 	momentFormat: function (value,format) {

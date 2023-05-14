@@ -23,9 +23,11 @@
           <span class="text-xl text-900 font-normal text-white mt-0">Collection total: <b class="text-white">{{getCollTotal(item)}}</b> </span>
           <div class="hide_on_mobile">
           <Button label="Download" icon="pi pi-download" class="p-button-sm ml-4 bg-white text-primary"  @click="downloadReport(item)"   />
+          <Button label="Show Chart" icon="pi pi-chart-bar" class="p-button-sm ml-4 bg-white text-primary"  @click="showReports()"   />
           </div>
           <div class="show_on_mobile">
           <Button  icon="pi pi-download" class="p-button-sm ml-4 bg-white text-primary"  @click="downloadReport(item)"   />
+          <Button  icon="pi pi-chart-bar" class="p-button-sm ml-4 bg-white text-primary ml-2"  @click="showReports()"   />
           </div>
         </div>
       </div>
@@ -95,6 +97,28 @@
 
 
 </DataTable>
+
+<Dialog v-model:visible="show_collection_chart_dialog" modal header="Report Charts" :style="{ width: '90vw' }">
+<div class="grid">
+<div class="col-12 md:col-6">
+  <Chart type="pie" :data="pieChartData" :options="pieChartOptions" class="w-full md:w-30rem" />
+</div>
+<div class="col-12 md:col-6">
+  <Chart type="line" :data="lineChartData" :options="lineChartOptions" class="h-30rem" />
+</div>
+
+</div>
+<template #footer>
+  <br/><br/>
+  <Button label="Close" icon="pi pi-check" @click="show_collection_chart_dialog = false" severity="danger" />
+</template>
+</Dialog>
+
+
+
+
+
+
 
 <Dialog v-model:visible="show_cell_detail_dialog" modal :header="dialog_header_text" :style="{ width: '90vw' }">
 <DataTable :value="selected_cell_data" 
@@ -167,6 +191,47 @@ export default {
       selected_cell_data:null,
       show_cell_detail_dialog:false,
       dialog_header_text:null,
+      show_collection_chart_dialog:false,
+      pieChartData:null,
+      lineChartData:null,
+      pieChartOptions: {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true
+                    }
+                }
+            }
+      },
+      lineChartOptions:{
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+            legend: {
+                labels: {
+                    color: null
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: null
+                },
+                grid: {
+                    color: null
+                }
+            },
+            y: {
+                ticks: {
+                    color: null
+                },
+                grid: {
+                    color: null
+                }
+            }
+        }
+      },
 
     }
   },
@@ -181,6 +246,85 @@ export default {
     await this.createReports()
   },
   methods:{
+    async showReports()
+    {
+      
+      //set pie chart
+      let collectionsObj = await {
+        labels: [],
+        datasets: [
+          {
+            data:[],
+            backgroundColor:[],
+          }
+        ]
+      }
+      collectionsObj.labels = await this.getCollectionLabels()
+      for(let collection of this.datatableitems)
+      {
+        let total = await parseFloat(this.getCollTotal(collection))
+        let color = await this.generateHex()
+        await collectionsObj.datasets[0].data.push(total)
+        await collectionsObj.datasets[0].backgroundColor.push(color)
+      }
+      this.pieChartData = await collectionsObj
+
+      //set pie chart
+
+      //set line options
+      let lineDataObj = {
+        labels:[],
+        datasets:[],
+      }
+      for(let collection of this.datatableitems)
+      {
+        for(let expenseitem of collection.expenseitems)
+        {
+          if(expenseitem.name !=="total")
+          {
+            lineDataObj.labels = collection.columns
+            let dataset = {
+              label:expenseitem.name,
+              data:[],
+              fill:false,
+              borderColor:this.generateHex(),
+              tension: 0.4,
+            }
+            for(let expense of expenseitem.all_expenses)
+            {
+              dataset.data.push(expense.price)
+            }
+            lineDataObj.datasets.push(dataset)
+          }
+          }
+          
+      }
+      this.lineChartData = lineDataObj
+      
+
+      //set line options
+
+
+
+
+
+      console.log(this.pieChartData)
+      setTimeout(()=>{
+        this.show_collection_chart_dialog = true
+      })
+    },
+    generateHex()
+    {
+      var randomColor = Math.floor(Math.random()*16777215).toString(16);
+      return "#"+randomColor
+
+    },
+    getCollectionLabels()
+    {
+      console.log(this.datatableitems)
+      let labels = this.datatableitems.map((item)=>{return item.name})
+      return labels
+    },
     showCellDetail(item,column)
     {
       console.log(item)
@@ -284,7 +428,6 @@ export default {
         let the_total = 0
         for(let element of the_total_item.total)
         {
-          console.log(element.total)
           the_total += parseFloat(element.total)
         }
         return this.$filters.numberformat(the_total)
@@ -296,10 +439,8 @@ export default {
       //this.invoive_popup_visibility = true
       //this.selected_expense = item
       let ddd = await this.getDownloadUrl(item.id)
-      console.log(ddd);
 
       let url = 'https://firebasestorage.googleapis.com/v0/b/nesesexpenses.appspot.com/o/'+item.file+'?alt=media'
-      console.log(url);
       const a = document.createElement('a')
       a.href = url
       a.download = url.split('/').pop()
@@ -401,6 +542,7 @@ export default {
           name:collection.name,
           id:collection.id,
           expenseitems:[],
+          expenses:[],
           total:0,
           start_date:null,
           end_date:null,
@@ -428,9 +570,13 @@ export default {
 
 
           let item_expenses = this.expenses.filter((item)=>{return item.expenseitem == col_expense_item.id})
-          col_expense_item_obj.all_expenses = item_expenses
+          col_expense_item_obj.all_expenses = item_expenses          
           let item_expenses_by_month = this.groupByMonths(item_expenses,"the_month")
           col_expense_item_obj.expenses = item_expenses_by_month
+
+
+          let collection_expenses = collection_obj.expenses.concat(item_expenses_by_month)
+          collection_obj.expenses = collection_expenses
           collection_obj.expenseitems.push(col_expense_item_obj)
 
           //calculate columns    
