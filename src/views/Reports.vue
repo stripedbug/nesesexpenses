@@ -179,6 +179,7 @@ sortMode="multiple"
 <script>
 import * as XLSX from 'xlsx/xlsx.mjs';
 import moment from "moment"
+
 export default {
 
   name: 'Reports',
@@ -329,7 +330,8 @@ export default {
     {
       this.selected_graph_source = "collections"
       let collectionsObj = await {
-        labels: [],
+        labels: [],        
+        options:null,
         datasets: [
           {
             data:[],
@@ -346,6 +348,11 @@ export default {
         await collectionsObj.datasets[0].data.push(total)
         await collectionsObj.datasets[0].backgroundColor.push(color)
       }
+
+      
+
+
+
       this.pieChartData = await collectionsObj
 
       //set pie chart
@@ -354,6 +361,7 @@ export default {
       let lineDataObj = {
         labels:[],
         datasets:[],
+        options:null,
       }
       for(let collection of this.datatableitems)
       {
@@ -378,6 +386,8 @@ export default {
           }
           
       }
+
+      
 
       this.lineChartData = lineDataObj
 
